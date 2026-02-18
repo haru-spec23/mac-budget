@@ -292,10 +292,13 @@ function pickCombo(budget) {
     }
 
     if (sum > bestSum) {
-      bestSum = sum;
-      best = combo;
-      if (bestSum === budget) break;
-    }
+  bestSum = sum;
+  best = combo;
+} else if (sum === bestSum && sum > 0) {
+  // 同じ“良さ”の候補が複数あるなら、一定確率で入れ替えてランダム性を出す
+  if (Math.random() < 0.35) best = combo;
+}
+
   }
 
   return best;
