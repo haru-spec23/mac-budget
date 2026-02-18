@@ -353,15 +353,23 @@ function render2(combo, mode, limit) {
   const sumPrice = combo.reduce((s, x) => s + x.price, 0);
   const sumCal = combo.reduce((s, x) => s + x.cal, 0);
 
-  const header =
+  const head =
     mode === "price"
-      ? `<div><b>合計：${sumPrice}円 / 上限：${limit}円</b>（参考: ${sumCal}kcal）</div>`
-      : `<div><b>合計：${sumCal}kcal / 上限：${limit}kcal</b>（参考: ${sumPrice}円）</div>`;
+      ? `<div class="sum"><strong>合計：${sumPrice}円</strong><span class="badge">上限：${limit}円 / 参考：${sumCal}kcal</span></div>`
+      : `<div class="sum"><strong>合計：${sumCal}kcal</strong><span class="badge">上限：${limit}kcal / 参考：${sumPrice}円</span></div>`;
 
-  const lines = combo.map(x => `・${x.name}（${x.price}円 / ${x.cal}kcal）`).join("<br>");
+  const itemsHtml = combo.length
+    ? `<div class="items">` + combo.map(x => `
+        <div class="item">
+          <div class="name">${x.name}</div>
+          <div class="meta">${x.price}円 / ${x.cal}kcal</div>
+        </div>
+      `).join("") + `</div>`
+    : `<div class="hint">上限内で組めなかった…</div>`;
 
-  return `${header}<div style="margin-top:10px">${lines || "上限内で組めなかった…"} </div>`;
+  return head + itemsHtml;
 }
+
 
 
     function render(combo, budget) {
