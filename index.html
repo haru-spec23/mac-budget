@@ -49,22 +49,45 @@
       { name: "アイスコーヒーS", price: 120 }
     ];
 
-    function pickCombo(budget) {
-      const shuffled = [...items].sort(() => Math.random() - 0.5);
-      const combo = [];
-      let sum = 0;
-      for (const it of shuffled) {
-        if (sum + it.price <= budget && Math.random() < 0.8) {
-          combo.push(it);
-          sum += it.price;
-        }
+   function pickCombo(budget) {
+  // 予算内で合計ができるだけ大きくなるように、何回か試して一番良い組み合わせを採用する
+  let best = [];
+  let bestSum = 0;
+
+  // 20回くらい試す（多いほどギリギリに寄る）
+  for (let trial = 0; trial < 30; trial++) {
+    // 価格が高い順をベースにしつつ、少しランダム性を混ぜる
+    const shuffled = [...items].sort(() => (Math.random() - 0.5));
+    shuffled.sort((a, b) => b.price - a.price + (Math.random() * 10 - 5));
+
+    const combo = [];
+    let sum = 0;
+
+    // 高いものから入れていく（入るなら入れる）
+    for (const it of shuffled) {
+      if (sum + it.price <= budget) {
+        combo.push(it);
+        sum += it.price;
       }
-      if (combo.length === 0) {
-        const cheapest = items.reduce((a,b)=> a.price<b.price?a:b);
-        if (cheapest.price <= budget) return [cheapest];
-      }
-      return combo;
     }
+
+    // もし余りが大きいなら、安いものを追加して埋める（同じ商品を複数入れてもOK仕様）
+    const cheapest = items.reduce((a,b)=> a.price < b.price ? a : b);
+    while (sum + cheapest.price <= budget) {
+      combo.push(cheapest);
+      sum += cheapest.price;
+    }
+
+    if (sum > bestSum) {
+      bestSum = sum;
+      best = combo;
+      // 予算ぴったりなら即終了
+      if (bestSum === budget) break;
+    }
+  }
+
+  return best;
+}
 
     function render(combo, budget) {
       const sum = combo.reduce((s, x) => s + x.price, 0);
