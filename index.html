@@ -194,27 +194,40 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+ <div class="wrap">
 
-  <h1>マック◯円以内メーカー（仮）</h1>
-<p><a href="./about.html">このサイトについて</a></p>
-  <p class="muted">予算を入れて「生成」。いまはダミーデータで動作確認。</p>
+  <div class="topbar">
+    <h1>マック予算メーカー</h1>
+    <div class="links">
+      <a href="./about.html">このサイトについて</a>
+    </div>
+  </div>
 
- <div class="row">
-  <label>モード：</label>
-  <select id="mode">
-    <option value="price">値段（円）</option>
-    <option value="cal">カロリー（kcal）</option>
-  </select>
+  <p class="sub">
+    上限内でランダムに組み合わせを生成します。
+  </p>
 
-  <label>上限：</label>
-  <input id="limit" type="number" value="1000" min="0" step="10">
+  <div class="panel">
+    <div class="row">
+      <label>モード：</label>
+      <select id="mode">
+        <option value="price">値段（円）</option>
+        <option value="cal">カロリー（kcal）</option>
+      </select>
 
-  <button id="btn">生成</button>
+      <label>上限：</label>
+      <input id="limit" type="number" value="1000" min="0" step="10">
+
+      <button id="btn">生成</button>
+    </div>
+
+    <div class="result" id="out">
+      ここに結果が出ます
+    </div>
+  </div>
+
 </div>
-<div class="card" id="out">
-  ここに結果が出ます
-</div>
+
   <script>
 const items = [
   { name: "ハンバーガー", price: 170, cal: 250 },
