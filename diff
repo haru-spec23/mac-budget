@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>マック◯円以内メーカー（仮）</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 22px; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    input { padding: 10px; font-size: 16px; width: 160px; }
+    button { padding: 10px 14px; font-size: 16px; cursor: pointer; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin-top: 16px; }
+    .muted { color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>マック◯円以内メーカー（仮）</h1>
+  <p class="muted">予算を入れて「生成」。いまはダミーデータで動作確認。</p>
+
+  <div class="row">
+    <label>予算：</label>
+    <input id="budget" type="number" value="1000" min="0" step="10">
+    <button id="btn">生成</button>
+  </div>
+
+  <div class="card" id="out">
+    ここに結果が出ます
+  </div>
+
+  <script>
+    const items = [
+      { name: "ハンバーガー", price: 170 },
+      { name: "チーズバーガー", price: 200 },
+      { name: "ポテトS", price: 190 },
+      { name: "ナゲット5ピース", price: 260 },
+      { name: "コーラS", price: 120 },
+      { name: "アイスコーヒーS", price: 120 }
+    ];
+
+    function pickCombo(budget) {
+      const shuffled = [...items].sort(() => Math.random() - 0.5);
+      const combo = [];
+      let sum = 0;
+      for (const it of shuffled) {
+        if (sum + it.price <= budget && Math.random() < 0.8) {
+          combo.push(it);
+          sum += it.price;
+        }
+      }
+      if (combo.length === 0) {
+        const cheapest = items.reduce((a,b)=> a.price<b.price?a:b);
+        if (cheapest.price <= budget) return [cheapest];
+      }
+      return combo;
+    }
+
+    function render(combo, budget) {
+      const sum = combo.reduce((s, x) => s + x.price, 0);
+      const lines = combo.map(x => `・${x.name}（${x.price}円）`).join("<br>");
+      return `
+        <div><b>合計：${sum}円 / 予算：${budget}円</b></div>
+        <div style="margin-top:10px">${lines || "予算内で組めなかった…"} </div>
+      `;
+    }
+
+    document.getElementById("btn").addEventListener("click", () => {
+      const budget = Number(document.getElementById("budget").value || 0);
+      const combo = pickCombo(budget);
+      document.getElementById("out").innerHTML = render(combo, budget);
+    });
+  </script>
+</body>
+</html>
