@@ -29,25 +29,29 @@
 <p><a href="./about.html">このサイトについて</a></p>
   <p class="muted">予算を入れて「生成」。いまはダミーデータで動作確認。</p>
 
-  <div class="row">
-    <label>予算：</label>
-    <input id="budget" type="number" value="1000" min="0" step="10">
-    <button id="btn">生成</button>
-  </div>
+ <div class="row">
+  <label>モード：</label>
+  <select id="mode">
+    <option value="price">値段（円）</option>
+    <option value="cal">カロリー（kcal）</option>
+  </select>
 
-  <div class="card" id="out">
-    ここに結果が出ます
-  </div>
+  <label>上限：</label>
+  <input id="limit" type="number" value="1000" min="0" step="10">
+
+  <button id="btn">生成</button>
+</div>
 
   <script>
-    const items = [
-      { name: "ハンバーガー", price: 170 },
-      { name: "チーズバーガー", price: 200 },
-      { name: "ポテトS", price: 190 },
-      { name: "ナゲット5ピース", price: 260 },
-      { name: "コーラS", price: 120 },
-      { name: "アイスコーヒーS", price: 120 }
-    ];
+const items = [
+  { name: "ハンバーガー", price: 170, cal: 250 },
+  { name: "チーズバーガー", price: 200, cal: 300 },
+  { name: "ポテトS", price: 190, cal: 220 },
+  { name: "ナゲット5ピース", price: 260, cal: 270 },
+  { name: "コーラS", price: 120, cal: 90 },
+  { name: "アイスコーヒーS", price: 120, cal: 5 }
+];
+
 
 function pickCombo(budget) {
   const MAX_PER_ITEM = 3; // ← 同じ商品の最大数
@@ -100,6 +104,65 @@ function pickCombo(budget) {
 
   return best;
 }
+function pickComboByCal(limitCal) {
+  const MAX_PER_ITEM = 3;
+  let best = [];
+  let bestSum = 0;
+
+  for (let trial = 0; trial < 40; trial++) {
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    shuffled.sort((a, b) => (b.cal - a.cal) + (Math.random() * 10 - 5));
+
+    const combo = [];
+    const counts = {};
+    let sumCal = 0;
+
+    const canAdd = (it) => (counts[it.name] || 0) < MAX_PER_ITEM;
+    const add = (it) => {
+      combo.push(it);
+      sumCal += it.cal;
+      counts[it.name] = (counts[it.name] || 0) + 1;
+    };
+
+    for (const it of shuffled) {
+      if (sumCal + it.cal <= limitCal && canAdd(it)) add(it);
+    }
+
+    const asc = [...items].sort((a, b) => a.cal - b.cal);
+    let improved = true;
+    while (improved) {
+      improved = false;
+      for (const it of asc) {
+        if (sumCal + it.cal <= limitCal && canAdd(it)) {
+          add(it);
+          improved = true;
+        }
+      }
+    }
+
+    if (sumCal > bestSum) {
+      bestSum = sumCal;
+      best = combo;
+      if (bestSum === limitCal) break;
+    }
+  }
+
+  return best;
+}
+
+function render2(combo, mode, limit) {
+  const sumPrice = combo.reduce((s, x) => s + x.price, 0);
+  const sumCal = combo.reduce((s, x) => s + x.cal, 0);
+
+  const header =
+    mode === "price"
+      ? `<div><b>合計：${sumPrice}円 / 上限：${limit}円</b>（参考: ${sumCal}kcal）</div>`
+      : `<div><b>合計：${sumCal}kcal / 上限：${limit}kcal</b>（参考: ${sumPrice}円）</div>`;
+
+  const lines = combo.map(x => `・${x.name}（${x.price}円 / ${x.cal}kcal）`).join("<br>");
+
+  return `${header}<div style="margin-top:10px">${lines || "上限内で組めなかった…"} </div>`;
+}
 
 
     function render(combo, budget) {
@@ -111,11 +174,17 @@ function pickCombo(budget) {
       `;
     }
 
-    document.getElementById("btn").addEventListener("click", () => {
-      const budget = Number(document.getElementById("budget").value || 0);
-      const combo = pickCombo(budget);
-      document.getElementById("out").innerHTML = render(combo, budget);
-    });
+document.getElementById("btn").addEventListener("click", () => {
+  const mode = document.getElementById("mode").value; // "price" or "cal"
+  const limit = Number(document.getElementById("limit").value || 0);
+
+  const combo = (mode === "price")
+    ? pickCombo(limit)
+    : pickComboByCal(limit);
+
+  document.getElementById("out").innerHTML = render2(combo, mode, limit);
+});
+
   </script>
 </body>
 </html>
