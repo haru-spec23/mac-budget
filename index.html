@@ -361,9 +361,11 @@ function pickComboByCal(limitCal) {
   let best = [];
   let bestSum = 0;
 
-  for (let trial = 0; trial < 40; trial++) {
+  for (let trial = 0; trial < 200; trial++) {
+
     const shuffled = [...items].sort(() => Math.random() - 0.5);
-    shuffled.sort((a, b) => (b.cal - a.cal) + (Math.random() * 10 - 5));
+    shuffled.sort((a, b) => b.price - a.price + (Math.random() * 40 - 20));
+
 
     const combo = [];
     const counts = {};
