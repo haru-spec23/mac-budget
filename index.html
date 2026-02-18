@@ -15,16 +15,187 @@
   </script>
   
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; }
-    h1 { font-size: 22px; }
-    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    input { padding: 10px; font-size: 16px; width: 160px; }
-    button { padding: 10px 14px; font-size: 16px; cursor: pointer; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin-top: 16px; }
-    .muted { color: #666; font-size: 14px; }
+    <style>
+  :root{
+    --bg:#fff8e1;
+    --card:#ffffff;
+    --text:#1a1a1a;
+    --muted:#555;
+    --border:#f0d38a;
+    --accent:#d32f2f;   /* マックっぽい赤 */
+    --accent2:#f9a825;  /* マックっぽい黄 */
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin:0;
+  }
+
+  .wrap{
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 18px 14px 40px;
+  }
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding: 14px 14px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, #fff, #fff3cf);
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+  }
+
+  h1{
+    margin:0;
+    font-size: 20px;
+    letter-spacing: .2px;
+  }
+
+  .links a{
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+  }
+  .links a:hover{
+    border-color: var(--border);
+    background:#fff;
+  }
+
+  .sub{
+    margin: 10px 2px 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .panel{
+    margin-top: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+  }
+
+  .row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
+  label{
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  input, select{
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background:#fff;
+    outline:none;
+    min-height: 42px;
+  }
+  input:focus, select:focus{
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(249,168,37,.25);
+  }
+
+  button{
+    padding: 11px 14px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor:pointer;
+    min-height: 42px;
+    font-weight: 700;
+  }
+  button:hover{ filter: brightness(0.95); }
+  button:active{ transform: translateY(1px); }
+
+  .hint{
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .result{
+    margin-top: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #fff;
+    padding: 14px;
+  }
+
+  .sum{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #f0d38a;
+    margin-bottom: 10px;
+  }
+
+  .sum strong{
+    font-size: 18px;
+  }
+
+  .badge{
+    display:inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    background: #fff7db;
+    color:#5a3b00;
+  }
+
+  .items{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top: 10px;
+  }
+
+  .item{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background:#fffdf6;
+  }
+
+  .item .name{ font-weight: 650; }
+  .item .meta{ color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+  @media (max-width:420px){
+    .item{ flex-direction:column; }
+    .item .meta{ white-space: normal; }
+  }
+</style>
+
   </style>
 </head>
 <body>
+  <div class="wrap">
+
   <h1>マック◯円以内メーカー（仮）</h1>
 <p><a href="./about.html">このサイトについて</a></p>
   <p class="muted">予算を入れて「生成」。いまはダミーデータで動作確認。</p>
@@ -188,5 +359,6 @@ document.getElementById("btn").addEventListener("click", () => {
 });
 
   </script>
+    </div>
 </body>
 </html>
